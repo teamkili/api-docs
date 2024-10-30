@@ -3,11 +3,9 @@ title: "Schema definition"
 description: "Defining your schema"
 ---
 
-# Defining your schema
-
 ## Overview
 
-Our API allows you to define custom schemas that specify what data you want to extract from your documents. This guide explains how to structure your schema for optimal extraction results.
+Our API allows you to extract data in the format that you need by defining a custom schema for each request. This guide explains how to structure your schema for optimal extraction results.
 
 ## Schema Structure
 
@@ -34,15 +32,18 @@ A document schema is defined using a structured format that specifies the fields
 }
 ```
 
-## Field Types
+## Primitive fields
 
     - `string`: Generic text data
     - `number`: Numeric values
     - `email`: Email addresses
     - `phone`: Phone numbers
     - `date`: Date values
-    - `object`: Nested object containing additional fields
-    - `array`: List of items with predefined structure
+
+## Objects and arrays
+
+    - `object`: Nested object containing additional fields where each field is a primitive field.
+    - `array`: List of items where each element is an object. As above, fields within each object can be any one of the primitive fields.
 
 ## Working with Objects
 

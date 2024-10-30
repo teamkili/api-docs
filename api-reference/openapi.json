@@ -1,20 +1,23 @@
 {
   "openapi": "3.0.1",
   "info": {
-    "title": "Schema Extraction API",
-    "description": "Extract structured data from any unstructured file.",
+    "title": "OpenAPI Plant Store",
+    "description": "A sample API that uses a plant store as an example to demonstrate features in the OpenAPI specification",
+    "license": {
+      "name": "MIT"
+    },
     "version": "1.0.0"
   },
   "servers": [
     {
-      "url": "https://api.example.com/v1"
+      "url": "http://sandbox.mintlify.com"
     }
   ],
   "paths": {
     "/upload": {
       "post": {
         "summary": "Upload a file",
-        "description": "Upload a file for schema extraction. We currently support the following file types: PDF, TXT, HTML, JPG, PNG, TIFF, JPG",
+        "description": "Upload a file for schema extraction. We currently support the following file types: PDF, TXT, HTML, JPG, PNG, TIFF, JPEG",
         "operationId": "uploadFile",
         "requestBody": {
           "content": {
@@ -162,6 +165,24 @@
         "operationId": "pollResults",
         "parameters": [
           {
+            "name": "Authorization",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Bearer token for authentication"
+          },
+          {
+            "name": "project_id",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Project ID"
+          },
+          {
             "name": "extraction_id",
             "in": "path",
             "required": true,
@@ -177,23 +198,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "type": "object",
-                  "properties": {
-                    "result": {
-                      "type": "object",
-                      "nullable": true
-                    }
-                  }
-                }
-              }
-            }
-          },
-          "500": {
-            "description": "Internal server error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
+                  "$ref": "#/components/schemas/ExtractionResult"
                 }
               }
             }
@@ -247,6 +252,94 @@
           }
         }
       },
+      "ExtractionResult": {
+        "type": "object",
+        "required": ["schema_name", "extracted_data", "processing_metadata"],
+        "properties": {
+          "schema_name": {
+            "type": "string",
+            "description": "Name of the schema used for extraction"
+          },
+          "extracted_data": {
+            "type": "object",
+            "additionalProperties": {
+              "$ref": "#/components/schemas/ExtractedField"
+            },
+            "description": "An object containing the extracted data. Each object can either be a primitive field,  a nested object or an array of objects."
+          }
+        }
+      },
+      "ExtractedField": {
+        "type": "object",
+        "required": ["name", "extracted"],
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Name of the extracted field"
+          },
+          "extracted": {
+            "$ref": "#/components/schemas/ExtractedValue",
+            "description": "The extracted value and its metadata"
+          },
+          "fields": {
+            "type": "object",
+            "additionalProperties": {
+              "$ref": "#/components/schemas/ExtractedField"
+            },
+            "nullable": true,
+            "description": "Nested fields within this field"
+          },
+          "items": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "additionalProperties": {
+                "$ref": "#/components/schemas/ExtractedField"
+              }
+            },
+            "nullable": true,
+            "description": "Array of nested fields for list-like data"
+          }
+        }
+      },
+
+      "ExtractedValue": {
+        "type": "object",
+        "required": ["value", "confidence", "source_context", "page_number"],
+        "properties": {
+          "value": {
+            "oneOf": [
+              { "$ref": "#/components/schemas/StringValue" },
+              { "$ref": "#/components/schemas/IntegerValue" },
+              { "$ref": "#/components/schemas/NumberValue" }
+            ],
+            "description": "The extracted value"
+          },
+          "confidence": {
+            "type": "number",
+            "format": "float",
+            "description": "Confidence score of the extraction"
+          },
+          "source_context": {
+            "type": "string",
+            "description": "Context of where the value was extracted from."
+          },
+          "page_number": {
+            "type": "integer",
+            "description": "Page number where the value was found."
+          }
+        }
+      },
+      "StringValue": {
+        "type": "string"
+      },
+      "IntegerValue": {
+        "type": "integer"
+      },
+      "NumberValue": {
+        "type": "number"
+      },
+
       "Error": {
         "type": "object",
         "required": ["detail"],

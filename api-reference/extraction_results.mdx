@@ -1,0 +1,64 @@
+---
+title: "Extraction results"
+---
+
+The API returns extracted data in a structured format with confidence scores and source context for each field.
+
+## Response Structure
+
+```json
+{
+  "schema_name": "string", // Name of your defined schema
+  "extracted_data": {
+    // Contains all extracted fields
+    "field_name": {
+      "name": "string", // Field name
+      "extracted": {
+        "value": "string", // Extracted value
+        "confidence": 0.95, // Confidence score (0-1)
+        "source_context": "string", // Original text context
+        "page_number": 1 // Page where value was found
+      }
+    }
+  }
+}
+```
+
+## Nested Objects and Arrays
+
+- **Objects**: Nested fields appear under a `fields` property
+- **Arrays**: List items appear under an `items` array
+- For each field that is extracted, we proivde a confidence score, the context of where the value was extracted from and the page number.
+
+## Example Response
+
+```json
+{
+  "schema_name": "Invoice",
+  "extracted_data": {
+    "invoice_number": {
+      "name": "invoice_number",
+      "extracted": {
+        "value": "INV-001",
+        "confidence": 0.93,
+        "source_context": "Invoice #INV-001 clearly displayed on the top right hand corner of the document.",
+        "page_number": 1
+      }
+    },
+    "line_items": {
+      "items": [
+        {
+          "description": {
+            "extracted": {
+              "value": "Widget A",
+              "confidence": 0.92,
+              "source_context": "1x Widget A clearly visible from the line items table.",
+              "page_number": 1
+            }
+          }
+        }
+      ]
+    }
+  }
+}
+```
