@@ -1,0 +1,336 @@
+---
+title: "Schema definition"
+description: "Defining your schema"
+---
+
+# Defining your schema
+
+## Overview
+
+Our API allows you to define custom schemas that specify what data you want to extract from your documents. This guide explains how to structure your schema for optimal extraction results.
+
+## Schema Structure
+
+A document schema is defined using a structured format that specifies the fields and their properties. Here's a basic example:
+
+```json
+{
+  "name": "Invoice",
+  "description": "Schema for extracting invoice details",
+  "fields": [
+    {
+      "name": "invoice_number",
+      "description": "The unique identifier for the invoice",
+      "type": "string",
+      "required": true
+    },
+    {
+      "name": "issue_date",
+      "description": "The date when the invoice was issued",
+      "type": "date",
+      "required": true
+    }
+  ]
+}
+```
+
+## Field Types
+
+    - `string`: Generic text data
+    - `number`: Numeric values
+    - `email`: Email addresses
+    - `phone`: Phone numbers
+    - `date`: Date values
+    - `object`: Nested object containing additional fields
+    - `array`: List of items with predefined structure
+
+## Working with Objects
+
+Use objects when you need to group related fields together. Here's how to structure an object type:
+
+```json
+{
+  "name": "billing_address",
+  "description": "Customer's billing address details",
+  "type": "object",
+  "required": true,
+  "fields": [
+    {
+      "name": "street",
+      "description": "Street address",
+      "type": "string",
+      "required": true
+    },
+    {
+      "name": "city",
+      "description": "City name",
+      "type": "string",
+      "required": true
+    },
+    {
+      "name": "postal_code",
+      "description": "Postal/ZIP code",
+      "type": "string",
+      "required": true
+    }
+  ]
+}
+```
+
+## Working with Arrays
+
+Use arrays when you need to extract repeating elements, such as line items in an invoice:
+
+```json
+{
+  "name": "line_items",
+  "description": "Individual items in the invoice",
+  "type": "array",
+  "required": true,
+  "fields": [
+    {
+      "name": "description",
+      "description": "Item description",
+      "type": "string",
+      "required": true
+    },
+    {
+      "name": "quantity",
+      "description": "Number of items",
+      "type": "number",
+      "required": true
+    },
+    {
+      "name": "unit_price",
+      "description": "Price per unit",
+      "type": "number",
+      "required": true
+    }
+  ]
+}
+```
+
+## Response Format
+
+The extraction system will return results in the following format:
+
+```json
+{
+  "schema_name": "Invoice",
+  "extracted_data": {
+    "invoice_number": {
+      "value": "INV-2024-001",
+      "confidence": 0.95,
+      "source_context": "Invoice #INV-2024-001",
+      "page_number": 1
+    },
+    "billing_address": {
+      "fields": {
+        "street": {
+          "value": "123 Main St",
+          "confidence": 0.92,
+          "source_context": "Billing Address: 123 Main St",
+          "page_number": 1
+        },
+        "city": {
+          "value": "San Francisco",
+          "confidence": 0.94,
+          "source_context": "San Francisco, CA",
+          "page_number": 1
+        }
+      }
+    }
+  },
+  "processing_metadata": {
+    "processing_time": "2.5s",
+    "engine_version": "1.0.0"
+  }
+}
+```
+
+## Best Practices
+
+<CardGroup>
+  <Card title="Field Names" icon="signature">
+    - Use clear, descriptive names - Use snake_case for consistency - Avoid
+    special characters
+  </Card>
+
+{" "}
+
+<Card title="Descriptions" icon="comment">
+  - Provide detailed descriptions - Include format examples - Specify any
+  expected patterns
+</Card>
+
+{" "}
+
+<Card title="Required Fields" icon="asterisk">
+  - Mark fields as required only when necessary - Consider extraction
+  reliability - Plan for missing data scenarios
+</Card>
+
+  <Card title="Nested Structures" icon="layer-group">
+    - Keep nesting depth reasonable (max 3-4 levels) - Use objects for logical
+    grouping - Use arrays for repeated structures
+  </Card>
+</CardGroup>
+
+## Schema Examples
+
+### Invoice Schema
+
+<CodeGroup>
+
+```json Basic
+{
+  "name": "SimpleInvoice",
+  "description": "Basic invoice information extraction",
+  "fields": [
+    {
+      "name": "invoice_number",
+      "description": "The invoice identifier",
+      "type": "string",
+      "required": true
+    },
+    {
+      "name": "date",
+      "description": "Invoice date",
+      "type": "date",
+      "required": true
+    },
+    {
+      "name": "total_amount",
+      "description": "Total invoice amount",
+      "type": "number",
+      "required": true
+    }
+  ]
+}
+```
+
+```json Advanced
+{
+  "name": "DetailedInvoice",
+  "description": "Comprehensive invoice data extraction",
+  "fields": [
+    {
+      "name": "invoice_number",
+      "description": "The invoice identifier",
+      "type": "string",
+      "required": true
+    },
+    {
+      "name": "customer",
+      "description": "Customer information",
+      "type": "object",
+      "required": true,
+      "fields": [
+        {
+          "name": "name",
+          "description": "Customer name",
+          "type": "string",
+          "required": true
+        },
+        {
+          "name": "email",
+          "description": "Customer email",
+          "type": "email",
+          "required": false
+        }
+      ]
+    },
+    {
+      "name": "line_items",
+      "description": "Individual items in the invoice",
+      "type": "array",
+      "required": true,
+      "fields": [
+        {
+          "name": "description",
+          "description": "Item description",
+          "type": "string",
+          "required": true
+        },
+        {
+          "name": "quantity",
+          "description": "Number of items",
+          "type": "number",
+          "required": true
+        },
+        {
+          "name": "unit_price",
+          "description": "Price per unit",
+          "type": "number",
+          "required": true
+        }
+      ]
+    }
+  ]
+}
+```
+
+</CodeGroup>
+
+### Receipt Schema
+
+```json
+{
+  "name": "Receipt",
+  "description": "Schema for extracting receipt details",
+  "fields": [
+    {
+      "name": "merchant",
+      "description": "Merchant information",
+      "type": "object",
+      "required": true,
+      "fields": [
+        {
+          "name": "name",
+          "description": "Merchant name",
+          "type": "string",
+          "required": true
+        },
+        {
+          "name": "phone",
+          "description": "Merchant phone number",
+          "type": "phone",
+          "required": false
+        }
+      ]
+    },
+    {
+      "name": "transaction_date",
+      "description": "Date of purchase",
+      "type": "date",
+      "required": true
+    },
+    {
+      "name": "items",
+      "description": "Purchased items",
+      "type": "array",
+      "required": true,
+      "fields": [
+        {
+          "name": "name",
+          "description": "Item name",
+          "type": "string",
+          "required": true
+        },
+        {
+          "name": "price",
+          "description": "Item price",
+          "type": "number",
+          "required": true
+        }
+      ]
+    },
+    {
+      "name": "total",
+      "description": "Total amount",
+      "type": "number",
+      "required": true
+    }
+  ]
+}
+```

@@ -14,7 +14,7 @@
     "/upload": {
       "post": {
         "summary": "Upload a file",
-        "description": "Upload a file for schema extraction",
+        "description": "Upload a file for schema extraction. We currently support the following file types: PDF, TXT, HTML, JPG, PNG, TIFF, JPG",
         "operationId": "uploadFile",
         "requestBody": {
           "content": {

@@ -46,12 +46,17 @@
   "navigation": [
     {
       "group": "Get Started",
-      "pages": ["introduction"]
+      "pages": ["introduction", "why", "roadmap"]
     },
 
     {
       "group": "API Documentation",
-      "pages": ["api-reference/introduction"]
+      "pages": [
+        "api-reference/introduction",
+        "api-reference/authentication",
+        "api-reference/supported_file_types",
+        "api-reference/schema_definition"
+      ]
     },
     {
       "group": "Endpoint Examples",
@@ -66,5 +71,8 @@
     "x": "https://x.com/mintlify",
     "github": "https://github.com/mintlify",
     "linkedin": "https://linkedin.com/company/mintlify"
+  },
+  "font": {
+    "family": "Manrope"
   }
 }
