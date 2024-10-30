@@ -2,7 +2,7 @@
   "openapi": "3.0.1",
   "info": {
     "title": "Schema Extraction API",
-    "description": "API for uploading files and extracting structured schema data",
+    "description": "Extract structured data from any unstructured file.",
     "version": "1.0.0"
   },
   "servers": [
@@ -41,6 +41,15 @@
               "type": "string"
             },
             "description": "Project ID"
+          },
+          {
+            "name": "Authorization",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Bearer token for authentication"
           }
         ],
         "responses": {
@@ -94,6 +103,15 @@
         },
         "parameters": [
           {
+            "name": "Authorization",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Bearer token for authentication"
+          },
+          {
             "name": "project_id",
             "in": "header",
             "required": true,
@@ -139,12 +157,12 @@
     },
     "/extract/{extraction_id}": {
       "get": {
-        "summary": "Poll extraction results",
-        "description": "Get the results of a schema extraction job",
+        "summary": "Get extraction results",
+        "description": "Get the results of a schema extraction job by polling",
         "operationId": "pollResults",
         "parameters": [
           {
-            "name": "job_id",
+            "name": "extraction_id",
             "in": "path",
             "required": true,
             "schema": {
@@ -226,11 +244,6 @@
             "type": "string",
             "format": "date-time",
             "description": "When the job was created"
-          },
-          "result": {
-            "type": "object",
-            "nullable": true,
-            "description": "Extraction results"
           }
         }
       },
