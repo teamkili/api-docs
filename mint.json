@@ -22,7 +22,7 @@
   ],
   "topbarCtaButton": {
     "name": "Dashboard",
-    "url": "https://app.curl.run"
+    "url": "https://app.tile.run"
   },
   "tabs": [
     {
@@ -34,7 +34,7 @@
     {
       "name": "Documentation",
       "icon": "book-open-cover",
-      "url": "https://curl.run/docs"
+      "url": "https://tile.run/docs"
     }
   ],
   "navigation": [
